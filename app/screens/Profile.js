@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-function Home(props) {
+function Profile(props) {
   const navigation = useNavigation(); //hook used to navigate to different screens
 
   const handlePress = (screen) => {
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
-export default Home;
+export default Profile;

@@ -6,10 +6,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   View,
+  Text,
 } from "react-native";
 
-function Home(props) {
-  const navigation = useNavigation(); //hook used to navigate to different screens
+function Track(props) {
+  const navigation = useNavigation(); // hook used to navigate to different screens
 
   const handlePress = (screen) => {
     navigation.navigate(screen);
@@ -17,6 +18,23 @@ function Home(props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.prContainer}>
+        <Text style={styles.label}>My PRs</Text>
+        <View style={styles.prRow}>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Squat</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Bench</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Deadlift</Text>
+          </View>
+        </View>
+      </View>
       <View style={styles.inner}></View>
       <View style={styles.navBar}>
         <TouchableOpacity
@@ -65,6 +83,51 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
+  prContainer: {
+    width: "90%",
+    height: 125,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginBottom: 15,
+    backgroundColor: "#444444",
+    borderColor: "#D3D3D3",
+    marginHorizontal: 20,
+  },
+  prRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "100%",
+  },
+  prColumn: {
+    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  pr: {
+    width: 50,
+    height: 50,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  prLabel: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  label: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 10,
+  },
   inner: {
     flex: 1,
   },
@@ -109,4 +172,4 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
-export default Home;
+export default Track;
