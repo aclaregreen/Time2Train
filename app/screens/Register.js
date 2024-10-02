@@ -28,8 +28,17 @@ const Register = () => {
         Alert.alert("Registration failed!", errorMessage);
       });
   };
+  const handlePress = (screen) => {
+    navigation.navigate(screen);
+  };
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => handlePress("Welcome")}
+      >
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -59,6 +68,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
+  },
+  back: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#333",
+    borderRadius: 20,
   },
   input: {
     width: "80%",

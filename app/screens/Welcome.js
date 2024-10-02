@@ -27,7 +27,7 @@ const Welcome = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.registerButton}
-        onPress={() => handlePress("Login")}
+        onPress={() => handlePress("Register")}
       >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
