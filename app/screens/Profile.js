@@ -31,11 +31,24 @@ function Profile(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inner}>
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <Text style={styles.label}>Username</Text>
+        </View>
         <TouchableOpacity style={styles.logoutButton} onPress={logOut}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.profileContainer}>
+        <View style={styles.pfp}></View>
+      </View>
+      <Text style={styles.name}>Name</Text>
+      <View style={styles.profileOptions}>
+        <TouchableOpacity style={styles.editProfile}>
+          <Text style={styles.label}>Edit Profile</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.inner}></View>
       <View style={styles.navBar}>
         <TouchableOpacity
           style={styles.navButton}
@@ -80,21 +93,81 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-  inner: {
-    flex: 1,
+
+  label: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  header: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    //borderRadius: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 0,
+    width: "100%",
+  },
+  headerText: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   logoutButton: {
     backgroundColor: "#333",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   logoutButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  profileContainer: {
+    width: "90%",
+    height: "15%",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginBottom: 15,
+    //backgroundColor: "#444444",
+    //borderColor: "#D3D3D3",
+    marginHorizontal: 20,
+    justifyContent: "center",
+  },
+  pfp: {
+    width: 120,
+    height: 120,
+    backgroundColor: "#444444",
+    borderRadius: "60",
+  },
+  name: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginHorizontal: 30,
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  profileOptions: {
+    width: "90%",
+    height: "5%",
+    marginBottom: 15,
+    marginHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  editProfile: {
+    backgroundColor: "#444444",
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 5,
+    paddingHorizontal: 125,
+  },
+  inner: {
+    flex: 1,
   },
   navBar: {
     flexDirection: "row",
