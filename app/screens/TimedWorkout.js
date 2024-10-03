@@ -252,7 +252,7 @@ const MgSelector = ({ setMuscleGroups }) => {
   );
 };
 
-function Workout() {
+function TimedWorkout() {
   const [time, setTime] = useState("");
   const [type, setType] = useState("");
   const [enviro, setEnviro] = useState("");
@@ -269,6 +269,12 @@ function Workout() {
         contentContainerStyle={styles.scrollContainer}
         style={styles.scrollView}
       >
+        <TouchableOpacity
+          style={styles.back}
+          onPress={() => handlePress("NewWorkout")}
+        >
+          <Text style={styles.backText}>Back</Text>
+        </TouchableOpacity>
         {/* TimeSelector Component */}
         <TimeSelector setTime={setTime} />
 
@@ -294,7 +300,7 @@ function Workout() {
           style={styles.navButton}
           onPress={() => handlePress("Home")}
         >
-          <Image source={require("../assets/home.png")} style={styles.home} />
+          <Image source={require("../assets/home.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
@@ -302,11 +308,11 @@ function Workout() {
         >
           <Image
             source={require("../assets/clipboard.png")}
-            style={styles.clipboard}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Image source={require("../assets/plus.png")} style={styles.timer} />
+          <Image source={require("../assets/plus.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
@@ -314,7 +320,7 @@ function Workout() {
         >
           <Image
             source={require("../assets/calculator.png")}
-            style={styles.calculator}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -335,6 +341,20 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#000000",
+  },
+  back: {
+    width: 80,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "green",
+    borderRadius: 15,
+    marginBottom: 10,
+  },
+  backText: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
   },
   scrollView: {
     padding: 10,
@@ -401,31 +421,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  home: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  clipboard: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  timer: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  calculator: {
-    height: 100,
-    width: 100,
+  icon: {
+    height: "180%",
+    width: "180%",
     resizeMode: "contain",
   },
   profile: {
-    height: 75,
-    width: 75,
+    height: "150%",
+    width: "150%",
     resizeMode: "contain",
   },
 });
 
-export default Workout;
+export default TimedWorkout;

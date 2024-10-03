@@ -20,13 +20,19 @@ function NewWorkout(props) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.inner}>
-        <TouchableOpacity style={styles.workoutButton}>
+        <TouchableOpacity
+          style={styles.workoutButton}
+          onPress={() => handlePress("CreateWorkout")}
+        >
           <Image
             source={require("../assets/pencil.png")}
             style={styles.icon}
           ></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.workoutButton}>
+        <TouchableOpacity
+          style={styles.workoutButton}
+          onPress={() => handlePress("TimedWorkout")}
+        >
           <Image
             source={require("../assets/timer.png")}
             style={styles.icon}
