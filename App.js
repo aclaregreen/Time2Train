@@ -8,6 +8,7 @@ import Welcome from "./app/screens/Welcome";
 import Register from "./app/screens/Register";
 import Login from "./app/screens/Login";
 
+import NewWorkout from "./app/screens/NewWorkout";
 import Workout from "./app/screens/Workout";
 import Calculator from "./app/screens/Calculator";
 import Home from "./app/screens/Home";
@@ -46,8 +47,8 @@ export default function App() {
           options={{ headerShown: false, animationEnabled: false }}
         />
         <Stack.Screen
-          name="Workout"
-          component={Workout}
+          name="NewWorkout"
+          component={NewWorkout}
           options={{ headerShown: false, animationEnabled: false }}
         />
         <Stack.Screen

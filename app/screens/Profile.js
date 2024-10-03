@@ -48,25 +48,57 @@ function Profile(props) {
           <Text style={styles.label}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.prContainer}>
+        <Text style={styles.label}>Stats</Text>
+        <View style={styles.prRow}>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Height</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Bodyweight</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Age</Text>
+          </View>
+        </View>
+        <Text style={styles.label}>PRs</Text>
+        <View style={styles.prRow}>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Height</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Bodyweight</Text>
+          </View>
+          <View style={styles.prColumn}>
+            <View style={styles.pr}></View>
+            <Text style={styles.prLabel}>Age</Text>
+          </View>
+        </View>
+      </View>
       <View style={styles.inner}></View>
       <View style={styles.navBar}>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => handlePress("Home")}
         >
-          <Image source={require("../assets/home.png")} style={styles.home} />
+          <Image source={require("../assets/home.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
           <Image
             source={require("../assets/clipboard.png")}
-            style={styles.clipboard}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => handlePress("Workout")}
+          onPress={() => handlePress("NewWorkout")}
         >
-          <Image source={require("../assets/timer.png")} style={styles.timer} />
+          <Image source={require("../assets/plus.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
@@ -74,7 +106,7 @@ function Profile(props) {
         >
           <Image
             source={require("../assets/calculator.png")}
-            style={styles.calculator}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
@@ -96,8 +128,9 @@ const styles = StyleSheet.create({
 
   label: {
     color: "white",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
+    paddingBottom: 10,
   },
   header: {
     paddingVertical: 10,
@@ -166,6 +199,46 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingHorizontal: 125,
   },
+  prContainer: {
+    width: "90%",
+    height: "35%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginBottom: 15,
+    backgroundColor: "#444444",
+    borderColor: "#D3D3D3",
+    marginHorizontal: 20,
+  },
+
+  prRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "100%",
+    paddingBottom: 10,
+  },
+  prColumn: {
+    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  pr: {
+    width: 50,
+    height: 50,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  prLabel: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
   inner: {
     flex: 1,
   },
@@ -184,29 +257,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  home: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  clipboard: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  timer: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  calculator: {
-    height: 100,
-    width: 100,
+  icon: {
+    height: "180%",
+    width: "180%",
     resizeMode: "contain",
   },
   profile: {
-    height: 75,
-    width: 75,
+    height: "150%",
+    width: "150%",
     resizeMode: "contain",
   },
 });

@@ -1,25 +1,43 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
-  StyleSheet,
-  Image,
   SafeAreaView,
-  TouchableOpacity,
+  StyleSheet,
   View,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  Image,
 } from "react-native";
 
-function Home(props) {
-  const navigation = useNavigation(); //hook used to navigate to different screens
+function NewWorkout(props) {
+  const navigation = useNavigation();
 
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.inner}></View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.inner}>
+        <TouchableOpacity style={styles.workoutButton}>
+          <Image
+            source={require("../assets/pencil.png")}
+            style={styles.icon}
+          ></Image>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.workoutButton}>
+          <Image
+            source={require("../assets/timer.png")}
+            style={styles.icon}
+          ></Image>
+        </TouchableOpacity>
+      </View>
       <View style={styles.navBar}>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => handlePress("Home")}
+        >
           <Image source={require("../assets/home.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -31,10 +49,7 @@ function Home(props) {
             style={styles.icon}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => handlePress("NewWorkout")}
-        >
+        <TouchableOpacity style={styles.navButton}>
           <Image source={require("../assets/plus.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -59,21 +74,32 @@ function Home(props) {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#000000",
   },
   inner: {
     flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  workoutButton: {
+    height: "20%",
+    width: "35%",
+    backgroundColor: "#444",
+    borderWidth: 2,
+    borderRadius: 25,
+    borderColor: "#D3D3D3",
+    justifyContent: "center",
+    alignItems: "center",
   },
   navBar: {
     flexDirection: "row",
     justifyContent: "space-around",
     backgroundColor: "#000",
     padding: 10,
-    width: "100%",
   },
   navButton: {
     width: 50,
@@ -94,4 +120,5 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
-export default Home;
+
+export default NewWorkout;

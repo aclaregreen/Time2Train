@@ -306,7 +306,7 @@ function Workout() {
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Image source={require("../assets/timer.png")} style={styles.timer} />
+          <Image source={require("../assets/plus.png")} style={styles.timer} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}

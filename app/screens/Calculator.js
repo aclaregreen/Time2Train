@@ -26,7 +26,7 @@ function Calculator(props) {
 
     const max = Math.round(
       (parseFloat(weight) * (1 + parseInt(reps) / 30)) /
-        (1.0333 - 0.0333 * (10 - parseInt(rpe)))
+        (1.0333 - 0.0333 * (10 - parseFloat(rpe)))
     );
     setOneRm(max);
   };
@@ -77,7 +77,7 @@ function Calculator(props) {
           style={styles.navButton}
           onPress={() => handlePress("Home")}
         >
-          <Image source={require("../assets/home.png")} style={styles.home} />
+          <Image source={require("../assets/home.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
@@ -85,19 +85,19 @@ function Calculator(props) {
         >
           <Image
             source={require("../assets/clipboard.png")}
-            style={styles.clipboard}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => handlePress("Workout")}
+          onPress={() => handlePress("NewWorkout")}
         >
-          <Image source={require("../assets/timer.png")} style={styles.timer} />
+          <Image source={require("../assets/plus.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
           <Image
             source={require("../assets/calculator.png")}
-            style={styles.calculator}
+            style={styles.icon}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -175,29 +175,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  home: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  clipboard: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  timer: {
-    height: 100,
-    width: 100,
-    resizeMode: "contain",
-  },
-  calculator: {
-    height: 100,
-    width: 100,
+  icon: {
+    height: "180%",
+    width: "180%",
     resizeMode: "contain",
   },
   profile: {
-    height: 75,
-    width: 75,
+    height: "150%",
+    width: "150%",
     resizeMode: "contain",
   },
 });
