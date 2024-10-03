@@ -1,15 +1,29 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { signOut } from "@firebase/auth";
+import { auth } from "../../Firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Image,
   SafeAreaView,
   TouchableOpacity,
   View,
+  Text,
 } from "react-native";
 
 function Profile(props) {
   const navigation = useNavigation(); //hook used to navigate to different screens
+
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+      await AsyncStorage.removeItem("userToken");
+      navigation.navigate("Welcome");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   const handlePress = (screen) => {
     navigation.navigate(screen);
@@ -17,7 +31,11 @@ function Profile(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inner}></View>
+      <View style={styles.inner}>
+        <TouchableOpacity style={styles.logoutButton} onPress={logOut}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.navBar}>
         <TouchableOpacity
           style={styles.navButton}
@@ -64,6 +82,19 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
+  },
+  logoutButton: {
+    backgroundColor: "#333",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  logoutButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   navBar: {
     flexDirection: "row",

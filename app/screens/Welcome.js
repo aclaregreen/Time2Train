@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Image,
   StyleSheet,
@@ -11,6 +12,21 @@ import {
 
 const Welcome = () => {
   const navigation = useNavigation(); //hook used to navigate to different screens
+
+  const checkUserLoggedIn = async () => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      if (token) {
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.error("Error checking login status: ", error);
+    }
+  };
+
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, []);
 
   const handlePress = (screen) => {
     navigation.navigate(screen);

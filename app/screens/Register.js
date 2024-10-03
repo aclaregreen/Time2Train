@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth } from "../../Firebase";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
   SafeAreaView,
@@ -16,12 +17,21 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const navigation = useNavigation(); //hook used to navigate to different screens
 
+  const saveRegister = async (token) => {
+    try {
+      await AsyncStorage.setItem("userToken", token);
+    } catch (error) {
+      console.error("Error saving user info: ", error);
+    }
+  };
+
   const handleRegister = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        saveRegister(user.stsTokenManager.accessToken);
         navigation.navigate("Home");
-        Alert.alert("Registration Successful, Welcome ${user.email}");
+        //Alert.alert("Registration Successful, Welcome ${user.email}");
       })
       .catch((error) => {
         const errorMessage = error.message;
