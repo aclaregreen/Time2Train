@@ -21,15 +21,6 @@ function CreateWorkout(props) {
   const [filtered, setFiltered] = useState([]);
   const [selectedExercises, setSelectedExercises] = useState([]);
 
-  //   const exerciseLib = [
-  //     { id: "1", name: "Bench Press" },
-  //     { id: "2", name: "Dumbbell Incline Press" },
-  //     { id: "3", name: "Deadlift" },
-  //     { id: "4", name: "Barbell Incline Press" },
-  //     { id: "5", name: "Dumbbell Shoulder Press" },
-  //     { id: "6", name: "Squat" },
-  //     { id: "7", name: "Pull-ups" },
-  //   ];
   useEffect(() => {
     const fetchExercises = async () => {
       try {
