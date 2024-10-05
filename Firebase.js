@@ -1,8 +1,10 @@
-import { initializeApp } from "firebase/app";
-import { initializeAuth, getReactNativePersistence } from "firebase/auth"; // Add this import
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Add this import
+import { initializeApp, getApp, getApps } from "firebase/app";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getFirestore } from "firebase/firestore";
+// import Config from "react-native-config";
+// console.log("Firebase API Key: ", Config.Test);
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCp2WNQfO7jw-oZ49DqbOnO2ZLO1F49uWA",
   authDomain: "time-2-train.firebaseapp.com",
@@ -13,12 +15,19 @@ const firebaseConfig = {
   measurementId: "G-0N7FZEP1ZQ", // Optional if you're not using analytics
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
 
-// Initialize Firebase Authentication with persistence
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+  console.log("Firebase app initialized.");
+} else {
+  app = getApp();
+  console.log("Using existing Firebase app.");
+}
+
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage), // Add this line
+  persistence: getReactNativePersistence(AsyncStorage),
 });
+const db = getFirestore(app);
 
-export { app, auth }; // Export the initialized app and auth
+export { app, auth, db };

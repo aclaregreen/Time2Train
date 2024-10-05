@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View } from "react-native";
-import app from "./Firebase";
+import { auth, db } from "./Firebase"; // Import auth and db
 
 import Welcome from "./app/screens/Welcome";
 import Register from "./app/screens/Register";
