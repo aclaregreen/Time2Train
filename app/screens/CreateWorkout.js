@@ -20,6 +20,7 @@ function CreateWorkout(props) {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [addedExercises, setAddedExercises] = useState([]);
 
   useEffect(() => {
     const fetchExercises = async () => {
@@ -55,7 +56,17 @@ function CreateWorkout(props) {
   };
 
   const handleAdd = () => {
-    console.log("Added: ", selectedExercises);
+    console.log("Newly Added: ", selectedExercises);
+
+    setAddedExercises((prevAddedExercises) => {
+      const newExercises = selectedExercises.filter(
+        (exercise) =>
+          !prevAddedExercises.some((added) => added.id === exercise.id)
+      );
+      console.log("Added: ", [...prevAddedExercises, ...newExercises]); // Log the new state here
+      return [...prevAddedExercises, ...newExercises];
+    });
+
     setSelectedExercises([]);
   };
 
@@ -69,7 +80,13 @@ function CreateWorkout(props) {
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Create Workout</Text>
-        <View style={styles.placeholder} />
+        {addedExercises.length > 0 ? (
+          <TouchableOpacity style={styles.startButton}>
+            <Text style={styles.start}>Start</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.placeholder}></View>
+        )}
       </View>
 
       <TextInput
@@ -138,15 +155,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backButton: {
+    width: 50,
+    height: 50,
     padding: 10,
     backgroundColor: "#444",
-    borderRadius: 20,
+    borderRadius: 10,
+    justifyContent: "center",
   },
   buttonText: {
     color: "white",
   },
   placeholder: {
     width: 50,
+  },
+  startButton: {
+    width: 50,
+    height: 50,
+    backgroundColor: "#39FF14",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  start: {
+    fontWeight: "bold",
   },
   searchBar: {
     height: 40,
