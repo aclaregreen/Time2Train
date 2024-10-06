@@ -10,6 +10,7 @@ import Login from "./app/screens/Login";
 
 import NewWorkout from "./app/screens/NewWorkout";
 import CreateWorkout from "./app/screens/CreateWorkout";
+import RecordWorkout from "./app/screens/RecordWorkout";
 import TimedWorkout from "./app/screens/TimedWorkout";
 import Calculator from "./app/screens/Calculator";
 import Home from "./app/screens/Home";
@@ -55,6 +56,11 @@ export default function App() {
         <Stack.Screen
           name="CreateWorkout"
           component={CreateWorkout}
+          options={{ headerShown: false, animationEnabled: false }}
+        />
+        <Stack.Screen
+          name="RecordWorkout"
+          component={RecordWorkout}
           options={{ headerShown: false, animationEnabled: false }}
         />
         <Stack.Screen

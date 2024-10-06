@@ -81,7 +81,10 @@ function CreateWorkout(props) {
         </TouchableOpacity>
         <Text style={styles.title}>Create Workout</Text>
         {addedExercises.length > 0 ? (
-          <TouchableOpacity style={styles.startButton}>
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={() => handlePress("RecordWorkout")}
+          >
             <Text style={styles.start}>Start</Text>
           </TouchableOpacity>
         ) : (
