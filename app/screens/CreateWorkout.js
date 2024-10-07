@@ -55,6 +55,10 @@ function CreateWorkout(props) {
     navigation.navigate(screen);
   };
 
+  const next = (screen) => {
+    navigation.navigate(screen, { addedExercises: addedExercises });
+  };
+
   const handleAdd = () => {
     console.log("Newly Added: ", selectedExercises);
 
@@ -83,7 +87,7 @@ function CreateWorkout(props) {
         {addedExercises.length > 0 ? (
           <TouchableOpacity
             style={styles.startButton}
-            onPress={() => handlePress("RecordWorkout")}
+            onPress={() => next("RecordWorkout")}
           >
             <Text style={styles.start}>Start</Text>
           </TouchableOpacity>
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   selectedItem: {
-    backgroundColor: "#87ceeb",
+    backgroundColor: "#B2FF7A",
   },
   addButton: {
     backgroundColor: "#39FF14",
