@@ -27,9 +27,10 @@ const Login = () => {
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
         saveLogin(user.stsTokenManager.accessToken);
+        await AsyncStorage.setItem("userId", user.uid);
         navigation.navigate("Home");
       })
       .catch((error) => {

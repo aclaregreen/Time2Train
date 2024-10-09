@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { db } from "../../Firebase";
+import { collection, addDoc } from "firebase/firestore";
 import {
   SafeAreaView,
   View,
@@ -8,7 +10,9 @@ import {
   Text,
   ScrollView,
   TextInput,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function RecordWorkout({ route }) {
   const navigation = useNavigation();
@@ -38,6 +42,22 @@ function RecordWorkout({ route }) {
     setExercises(updatedExercises);
   };
 
+  const saveProgress = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    try {
+      const workoutData = {
+        exercises: exercises,
+        userId: userId,
+        timeStamp: new Date().toISOString(),
+      };
+      await addDoc(collection(db, "Workouts"), workoutData);
+      alert("Workout saved successfully");
+    } catch (error) {
+      console.error("Error saving workout");
+      alert("Failed to save workout");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -48,7 +68,9 @@ function RecordWorkout({ route }) {
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Workout</Text>
-        <View style={styles.placeholder}></View>
+        <TouchableOpacity style={styles.saveButton} onPress={saveProgress}>
+          <Text>Save</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.exerciseContainer}>
         {exercises.map((exercise, exerciseIndex) => (
@@ -61,14 +83,8 @@ function RecordWorkout({ route }) {
             </View>
             {exercise.sets.map((set, setIndex) => (
               <View key={setIndex} style={styles.stats}>
-                {/* <View style={styles.statsHeader}>
-                  <Text style={[styles.headerText]}>Set</Text>
-                  <Text style={[styles.headerText]}>Weight</Text>
-                  <Text style={[styles.headerText]}>Reps</Text>
-                </View> */}
                 <View style={styles.values}>
                   <Text style={styles.valueText}>{setIndex + 1}</Text>
-                  {/* TextInput for weight */}
                   <TextInput
                     style={styles.valueText}
                     keyboardType="numeric"
@@ -77,16 +93,26 @@ function RecordWorkout({ route }) {
                     onChangeText={(value) =>
                       changeStats(exerciseIndex, setIndex, "weight", value)
                     }
+                    onEndEditing={() => {
+                      if (set.weight === "") {
+                        changeStats(exerciseIndex, setIndex, "weight", 0);
+                      }
+                    }}
                   />
-                  {/* TextInput for reps */}
                   <TextInput
                     style={styles.valueText}
                     keyboardType="numeric"
                     returnKeyType="done"
+                    min="0"
                     value={String(set.reps)}
                     onChangeText={(value) =>
                       changeStats(exerciseIndex, setIndex, "reps", value)
                     }
+                    onEndEditing={() => {
+                      if (set.reps === "") {
+                        changeStats(exerciseIndex, setIndex, "reps", 0);
+                      }
+                    }}
                   />
                 </View>
               </View>
@@ -133,8 +159,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
   },
-  placeholder: {
+  saveButton: {
+    backgroundColor: "#39FF14",
     width: 50,
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: "center",
   },
   exercise: {
     backgroundColor: "#444",

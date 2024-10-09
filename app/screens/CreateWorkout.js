@@ -60,14 +60,11 @@ function CreateWorkout(props) {
   };
 
   const handleAdd = () => {
-    console.log("Newly Added: ", selectedExercises);
-
     setAddedExercises((prevAddedExercises) => {
       const newExercises = selectedExercises.filter(
         (exercise) =>
           !prevAddedExercises.some((added) => added.id === exercise.id)
       );
-      console.log("Added: ", [...prevAddedExercises, ...newExercises]); // Log the new state here
       return [...prevAddedExercises, ...newExercises];
     });
 
