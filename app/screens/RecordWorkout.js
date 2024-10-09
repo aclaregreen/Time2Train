@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  TextInput,
 } from "react-native";
-import { executeQuery } from "firebase/data-connect";
 
 function RecordWorkout({ route }) {
   const navigation = useNavigation();
@@ -25,6 +25,12 @@ function RecordWorkout({ route }) {
     navigation.navigate(screen);
   };
 
+  const changeStats = (exerciseIndex, setIndex, stat, value) => {
+    const updatedExercises = [...exercises];
+    updatedExercises[exerciseIndex].sets[setIndex][stat] = value;
+    setExercises(updatedExercises);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -38,24 +44,36 @@ function RecordWorkout({ route }) {
         <View style={styles.placeholder}></View>
       </View>
       <ScrollView style={styles.exerciseContainer}>
-        {exercises.map((exercise, index) => (
+        {exercises.map((exercise, exerciseIndex) => (
           <View key={exercise.id} style={styles.exercise}>
             <Text style={styles.exerciseText}>{exercise.name}</Text>
-            {exercise.sets.map((set, index) => (
-              <View key={index} style={styles.stats}>
+            {exercise.sets.map((set, setIndex) => (
+              <View key={setIndex} style={styles.stats}>
                 <View style={styles.statsHeader}>
                   <Text style={[styles.headerText]}>Set</Text>
                   <Text style={[styles.headerText]}>Weight</Text>
                   <Text style={[styles.headerText]}>Reps</Text>
                 </View>
                 <View style={styles.values}>
-                  <Text style={styles.valueText}>{index + 1}</Text>
-                  <TouchableOpacity style={styles.valueTouchable}>
-                    <Text style={styles.valueText}>{set.weight}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.valueTouchable}>
-                    <Text style={styles.valueText}>{set.reps}</Text>
-                  </TouchableOpacity>
+                  <Text style={styles.valueText}>{setIndex + 1}</Text>
+                  {/* TextInput for weight */}
+                  <TextInput
+                    style={styles.valueText}
+                    keyboardType="numeric"
+                    value={String(set.weight)}
+                    onChangeText={(value) =>
+                      changeStats(exerciseIndex, setIndex, "weight", value)
+                    }
+                  />
+                  {/* TextInput for reps */}
+                  <TextInput
+                    style={styles.valueText}
+                    keyboardType="numeric"
+                    value={String(set.reps)}
+                    onChangeText={(value) =>
+                      changeStats(exerciseIndex, setIndex, "reps", value)
+                    }
+                  />
                 </View>
               </View>
             ))}
@@ -112,7 +130,7 @@ const styles = StyleSheet.create({
   exerciseText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: "18",
+    fontSize: 18,
     paddingTop: 10,
   },
   stats: {
@@ -145,11 +163,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
   },
-  valueTouchable: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   addSet: {
     width: "40%",
     height: 50,
@@ -160,4 +173,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
 export default RecordWorkout;
