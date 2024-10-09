@@ -31,6 +31,13 @@ function RecordWorkout({ route }) {
     setExercises(updatedExercises);
   };
 
+  const addSet = (exerciseIndex) => {
+    const updatedExercises = [...exercises];
+    const newSet = { reps: 0, weight: 0 };
+    updatedExercises[exerciseIndex].sets.push(newSet);
+    setExercises(updatedExercises);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -47,19 +54,25 @@ function RecordWorkout({ route }) {
         {exercises.map((exercise, exerciseIndex) => (
           <View key={exercise.id} style={styles.exercise}>
             <Text style={styles.exerciseText}>{exercise.name}</Text>
+            <View style={styles.statsHeader}>
+              <Text style={[styles.headerText]}>Set</Text>
+              <Text style={[styles.headerText]}>Weight</Text>
+              <Text style={[styles.headerText]}>Reps</Text>
+            </View>
             {exercise.sets.map((set, setIndex) => (
               <View key={setIndex} style={styles.stats}>
-                <View style={styles.statsHeader}>
+                {/* <View style={styles.statsHeader}>
                   <Text style={[styles.headerText]}>Set</Text>
                   <Text style={[styles.headerText]}>Weight</Text>
                   <Text style={[styles.headerText]}>Reps</Text>
-                </View>
+                </View> */}
                 <View style={styles.values}>
                   <Text style={styles.valueText}>{setIndex + 1}</Text>
                   {/* TextInput for weight */}
                   <TextInput
                     style={styles.valueText}
                     keyboardType="numeric"
+                    returnKeyType="done"
                     value={String(set.weight)}
                     onChangeText={(value) =>
                       changeStats(exerciseIndex, setIndex, "weight", value)
@@ -69,6 +82,7 @@ function RecordWorkout({ route }) {
                   <TextInput
                     style={styles.valueText}
                     keyboardType="numeric"
+                    returnKeyType="done"
                     value={String(set.reps)}
                     onChangeText={(value) =>
                       changeStats(exerciseIndex, setIndex, "reps", value)
@@ -77,7 +91,10 @@ function RecordWorkout({ route }) {
                 </View>
               </View>
             ))}
-            <TouchableOpacity style={styles.addSet}>
+            <TouchableOpacity
+              style={styles.addSet}
+              onPress={() => addSet(exerciseIndex)}
+            >
               <Text>Add Set +</Text>
             </TouchableOpacity>
           </View>
