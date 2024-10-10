@@ -68,15 +68,15 @@ function Profile(props) {
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
             <View style={styles.pr}></View>
-            <Text style={styles.prLabel}>Height</Text>
+            <Text style={styles.prLabel}>Bench</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}></View>
-            <Text style={styles.prLabel}>Bodyweight</Text>
+            <Text style={styles.prLabel}>Squat</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}></View>
-            <Text style={styles.prLabel}>Age</Text>
+            <Text style={styles.prLabel}>Deadlift</Text>
           </View>
         </View>
       </View>

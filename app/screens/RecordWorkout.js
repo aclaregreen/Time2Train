@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../../Firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import {
   SafeAreaView,
   View,
@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 function RecordWorkout({ route }) {
   const navigation = useNavigation();
   const { addedExercises } = route.params;
+  const [workoutId, setWorkoutId] = useState(null);
 
   const [exercises, setExercises] = useState(
     addedExercises.map((exercise) => ({
@@ -50,8 +51,18 @@ function RecordWorkout({ route }) {
         userId: userId,
         timeStamp: new Date().toISOString(),
       };
-      await addDoc(collection(db, "Workouts"), workoutData);
-      alert("Workout saved successfully");
+      if (workoutId) {
+        const workoutDocRef = doc(db, "Workouts", workoutId);
+        await updateDoc(workoutDocRef, workoutData);
+        alert("Workout saved successfully");
+      } else {
+        const workoutRef = await addDoc(
+          collection(db, "Workouts"),
+          workoutData
+        );
+        setWorkoutId(workoutRef.id);
+        alert("Workout saved successfully");
+      }
     } catch (error) {
       console.error("Error saving workout");
       alert("Failed to save workout");
@@ -126,6 +137,17 @@ function RecordWorkout({ route }) {
           </View>
         ))}
       </ScrollView>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.finishButton}
+          onPress={() => {
+            saveProgress();
+            handlePress("NewWorkout");
+          }}
+        >
+          <Text style={styles.finishText}>Finish Workout</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -219,6 +241,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  footer: {
+    alignItems: "center",
+  },
+  finishButton: {
+    backgroundColor: "#39FF14",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+    width: "50%",
+    borderRadius: 10,
+  },
+  finishText: {
+    fontWeight: "bold",
   },
 });
 
