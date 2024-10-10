@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { auth } from "../../Firebase";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import { db } from "../../Firebase";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -15,6 +17,10 @@ import {
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [fname, setFName] = useState("");
+  const [lname, setLName] = useState("");
+  const [profileId, setProfileId] = useState(null);
   const navigation = useNavigation(); //hook used to navigate to different screens
 
   const saveRegister = async (token) => {
@@ -25,11 +31,38 @@ const Register = () => {
     }
   };
 
+  const addProfile = async () => {
+    try {
+      const profileData = {
+        username: username,
+        fname: fname,
+        lname: lname,
+      };
+      const userId = await AsyncStorage.getItem("userId");
+      console.log(userId);
+
+      if (profileId) {
+        const profileDocRef = doc(db, "Profiles", userId);
+        await updateDoc(profileDocRef, profileData);
+      } else {
+        const profileRef = await addDoc(
+          collection(db, "Profiles"),
+          profileData
+        );
+        setProfileId(profileRef.id);
+      }
+    } catch (error) {
+      console.error("Error creating profile: ", error);
+    }
+  };
+
   const handleRegister = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
         saveRegister(user.stsTokenManager.accessToken);
+        await AsyncStorage.setItem("userId", user.uid);
+        addProfile();
         navigation.navigate("Home");
         //Alert.alert("Registration Successful, Welcome ${user.email}");
       })
@@ -65,7 +98,34 @@ const Register = () => {
         secureTextEntry
         returnKeyType="done"
       />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        returnKeyType="done"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        value={fname}
+        onChangeText={setFName}
+        returnKeyType="done"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lname}
+        onChangeText={setLName}
+        returnKeyType="done"
+      />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          handleRegister();
+          // addProfile();
+        }}
+      >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </SafeAreaView>
