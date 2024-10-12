@@ -32,13 +32,14 @@ const Register = () => {
   };
 
   const addProfile = async () => {
+    const userId = await AsyncStorage.getItem("userId");
     try {
       const profileData = {
         username: username,
         fname: fname,
         lname: lname,
+        userId: userId,
       };
-      const userId = await AsyncStorage.getItem("userId");
       console.log(userId);
 
       if (profileId) {

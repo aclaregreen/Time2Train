@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { signOut } from "@firebase/auth";
+import {
+  getFirestore,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../../Firebase";
 import { auth } from "../../Firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -13,7 +22,45 @@ import {
 } from "react-native";
 
 function Profile(props) {
-  const navigation = useNavigation(); //hook used to navigate to different screens
+  const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  // This effect runs once to fetch the userId from AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId");
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    };
+
+    fetchUserId();
+  }, []); // Run only once on mount
+
+  // This effect runs whenever userId changes
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!userId) return; // Don't proceed if userId is null
+
+      try {
+        const profileCollection = collection(db, "Profiles");
+        const q = query(profileCollection, where("userId", "==", userId));
+        const querySnapShot = await getDocs(q);
+
+        if (!querySnapShot.empty) {
+          const data = querySnapShot.docs[0].data();
+          setUser(data);
+        } else {
+          console.log("No such user found");
+        }
+      } catch (error) {
+        console.error("Error fetching profile: ", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [userId]); // This will run when userId changes
 
   const logOut = async () => {
     try {
@@ -33,7 +80,9 @@ function Profile(props) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerText}>
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.label}>
+            {user ? user.username : "Loading..."}
+          </Text>
         </View>
         <TouchableOpacity style={styles.logoutButton} onPress={logOut}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -42,7 +91,9 @@ function Profile(props) {
       <View style={styles.profileContainer}>
         <View style={styles.pfp}></View>
       </View>
-      <Text style={styles.name}>Name</Text>
+      <Text style={styles.name}>
+        {user.fname} {user.lname}
+      </Text>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.editProfile}>
           <Text style={styles.label}>Edit Profile</Text>
@@ -125,7 +176,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-
   label: {
     color: "white",
     fontSize: 18,
@@ -135,7 +185,6 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 10,
     paddingHorizontal: 10,
-    //borderRadius: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -165,8 +214,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     marginBottom: 15,
-    //backgroundColor: "#444444",
-    //borderColor: "#D3D3D3",
     marginHorizontal: 20,
     justifyContent: "center",
   },
@@ -174,7 +221,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     backgroundColor: "#444444",
-    borderRadius: "60",
+    borderRadius: 60,
   },
   name: {
     color: "white",
@@ -211,7 +258,6 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
     marginHorizontal: 20,
   },
-
   prRow: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -235,37 +281,30 @@ const styles = StyleSheet.create({
   },
   prLabel: {
     fontSize: 18,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: "white",
   },
   inner: {
     flex: 1,
+    marginBottom: 60,
   },
   navBar: {
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "#000",
-    padding: 10,
-    width: "100%",
+    alignItems: "center",
+    paddingVertical: 10,
+    backgroundColor: "#333",
   },
   navButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: "#444",
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
+    padding: 10,
   },
   icon: {
-    height: "180%",
-    width: "180%",
-    resizeMode: "contain",
+    width: 25,
+    height: 25,
   },
   profile: {
-    height: "150%",
-    width: "150%",
-    resizeMode: "contain",
+    width: 30,
+    height: 30,
   },
 });
+
 export default Profile;
