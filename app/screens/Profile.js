@@ -91,9 +91,7 @@ function Profile(props) {
       <View style={styles.profileContainer}>
         <View style={styles.pfp}></View>
       </View>
-      <Text style={styles.name}>
-        {user.fname} {user.lname}
-      </Text>
+      <Text style={styles.name}>Name</Text>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.editProfile}>
           <Text style={styles.label}>Edit Profile</Text>
@@ -290,20 +288,27 @@ const styles = StyleSheet.create({
   navBar: {
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center",
-    paddingVertical: 10,
-    backgroundColor: "#333",
+    backgroundColor: "#000",
+    padding: 10,
+    width: "100%",
   },
   navButton: {
-    padding: 10,
+    width: 50,
+    height: 50,
+    backgroundColor: "#444",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
-    width: 25,
-    height: 25,
+    height: "180%",
+    width: "180%",
+    resizeMode: "contain",
   },
   profile: {
-    width: 30,
-    height: 30,
+    height: "150%",
+    width: "150%",
+    resizeMode: "contain",
   },
 });
 
