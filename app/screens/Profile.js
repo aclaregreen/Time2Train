@@ -103,30 +103,42 @@ function Profile(props) {
         <Text style={styles.label}>Stats</Text>
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.height : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Height</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.weight : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Bodyweight</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.age : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Age</Text>
           </View>
         </View>
         <Text style={styles.label}>PRs</Text>
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.bench : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Bench</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.squat : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Squat</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text style={styles.statText}>{user ? user.deadlift : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Deadlift</Text>
           </View>
         </View>

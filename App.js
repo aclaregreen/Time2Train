@@ -6,6 +6,7 @@ import { auth, db } from "./Firebase"; // Import auth and db
 
 import Welcome from "./app/screens/Welcome";
 import Register from "./app/screens/Register";
+import AboutYou from "./app/screens/AboutYou";
 import Login from "./app/screens/Login";
 
 import NewWorkout from "./app/screens/NewWorkout";
@@ -31,6 +32,11 @@ export default function App() {
         <Stack.Screen
           name="Register"
           component={Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AboutYou"
+          component={AboutYou}
           options={{ headerShown: false }}
         />
         <Stack.Screen

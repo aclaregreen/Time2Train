@@ -23,58 +23,67 @@ const Register = () => {
   const [profileId, setProfileId] = useState(null);
   const navigation = useNavigation(); //hook used to navigate to different screens
 
-  const saveRegister = async (token) => {
-    try {
-      await AsyncStorage.setItem("userToken", token);
-    } catch (error) {
-      console.error("Error saving user info: ", error);
-    }
-  };
+  // const saveRegister = async (token) => {
+  //   try {
+  //     await AsyncStorage.setItem("userToken", token);
+  //   } catch (error) {
+  //     console.error("Error saving user info: ", error);
+  //   }
+  // };
 
-  const addProfile = async () => {
-    const userId = await AsyncStorage.getItem("userId");
-    try {
-      const profileData = {
-        username: username,
-        fname: fname,
-        lname: lname,
-        userId: userId,
-      };
-      console.log(userId);
+  // const addProfile = async () => {
+  //   const userId = await AsyncStorage.getItem("userId");
+  //   try {
+  //     const profileData = {
+  //       username: username,
+  //       fname: fname,
+  //       lname: lname,
+  //       userId: userId,
+  //     };
+  //     console.log(userId);
 
-      if (profileId) {
-        const profileDocRef = doc(db, "Profiles", userId);
-        await updateDoc(profileDocRef, profileData);
-      } else {
-        const profileRef = await addDoc(
-          collection(db, "Profiles"),
-          profileData
-        );
-        setProfileId(profileRef.id);
-      }
-    } catch (error) {
-      console.error("Error creating profile: ", error);
-    }
-  };
+  //     if (profileId) {
+  //       const profileDocRef = doc(db, "Profiles", userId);
+  //       await updateDoc(profileDocRef, profileData);
+  //     } else {
+  //       const profileRef = await addDoc(
+  //         collection(db, "Profiles"),
+  //         profileData
+  //       );
+  //       setProfileId(profileRef.id);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating profile: ", error);
+  //   }
+  // };
 
-  const handleRegister = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
-        saveRegister(user.stsTokenManager.accessToken);
-        await AsyncStorage.setItem("userId", user.uid);
-        addProfile();
-        navigation.navigate("Home");
-        //Alert.alert("Registration Successful, Welcome ${user.email}");
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        Alert.alert("Registration failed!", errorMessage);
-      });
-  };
+  // const handleRegister = () => {
+  //   createUserWithEmailAndPassword(auth, email, password)
+  //     .then(async (userCredential) => {
+  //       const user = userCredential.user;
+  //       saveRegister(user.stsTokenManager.accessToken);
+  //       await AsyncStorage.setItem("userId", user.uid);
+  //       addProfile();
+  //       navigation.navigate("AboutYou");
+  //       //Alert.alert("Registration Successful, Welcome ${user.email}");
+  //     })
+  //     .catch((error) => {
+  //       const errorMessage = error.message;
+  //       Alert.alert("Registration failed!", errorMessage);
+  //     });
+  // };
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
+
+  const next = (screen) => {
+    navigation.navigate(screen, {
+      username: username,
+      email: email,
+      password: password,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
@@ -83,20 +92,13 @@ const Register = () => {
       >
         <Text style={styles.buttonText}>Back</Text>
       </TouchableOpacity>
+      <Text style={styles.title}>Create an Account</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
-        returnKeyType="done"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
         returnKeyType="done"
       />
       <TextInput
@@ -108,26 +110,21 @@ const Register = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="First Name"
-        value={fname}
-        onChangeText={setFName}
-        returnKeyType="done"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lname}
-        onChangeText={setLName}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
         returnKeyType="done"
       />
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          handleRegister();
+          // handleRegister();
           // addProfile();
+          next("AboutYou");
         }}
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -148,6 +145,12 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#333",
     borderRadius: 20,
+  },
+  title: {
+    color: "#39FF14",
+    padding: 20,
+    fontSize: "30",
+    fontWeight: "bold",
   },
   input: {
     width: "80%",
