@@ -91,7 +91,9 @@ function Profile(props) {
       <View style={styles.profileContainer}>
         <View style={styles.pfp}></View>
       </View>
-      <Text style={styles.name}>Name</Text>
+      <Text style={styles.name}>
+        {user ? user.fname : ""} {user ? user.lname : ""}
+      </Text>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.editProfile}>
           <Text style={styles.label}>Edit Profile</Text>
