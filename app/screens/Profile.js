@@ -151,7 +151,10 @@ function Profile(props) {
         >
           <Image source={require("../assets/home.png")} style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => handlePress("Track")}
+        >
           <Image
             source={require("../assets/clipboard.png")}
             style={styles.icon}

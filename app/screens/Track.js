@@ -35,8 +35,10 @@ function Track(props) {
           </View>
         </View>
       </View>
+      <View style={styles.workoutsContainer}>
+        <Text style={styles.myWorkoutsText}>My Workouts</Text>
+      </View>
       <View style={styles.chartsContainer}></View>
-      <View style={styles.workoutsContainer}></View>
       <View style={styles.inner}></View>
       <View style={styles.navBar}>
         <TouchableOpacity
@@ -130,10 +132,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10,
   },
-  chartsContainer: {
+  workoutsContainer: {
     width: "90%",
     height: "35%",
-    justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
     borderRadius: 10,
@@ -142,7 +143,15 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
     marginHorizontal: 20,
   },
-  workoutsContainer: {
+  myWorkoutsText: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 10,
+    padding: 10,
+  },
+  chartsContainer: {
     width: "90%",
     height: "35%",
     justifyContent: "center",
