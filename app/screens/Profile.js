@@ -26,7 +26,7 @@ function Profile(props) {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  // This effect runs once to fetch the userId from AsyncStorage
+  //fetch the userId from AsyncStorage
   useEffect(() => {
     const fetchUserId = async () => {
       const storedUserId = await AsyncStorage.getItem("userId");
@@ -36,12 +36,12 @@ function Profile(props) {
     };
 
     fetchUserId();
-  }, []); // Run only once on mount
+  }, []);
 
-  // This effect runs whenever userId changes
+  //runs whenever userId changes
   useEffect(() => {
     const fetchUserProfile = async () => {
-      if (!userId) return; // Don't proceed if userId is null
+      if (!userId) return;
 
       try {
         const profileCollection = collection(db, "Profiles");
@@ -60,7 +60,7 @@ function Profile(props) {
     };
 
     fetchUserProfile();
-  }, [userId]); // This will run when userId changes
+  }, [userId]); //run when userId changes
 
   const logOut = async () => {
     try {

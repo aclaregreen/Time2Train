@@ -1,5 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getFirestore,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../../Firebase";
 import {
   StyleSheet,
   Image,
@@ -7,10 +17,67 @@ import {
   TouchableOpacity,
   View,
   Text,
+  ScrollView,
 } from "react-native";
 
 function Track(props) {
   const navigation = useNavigation(); // hook used to navigate to different screens
+  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
+  const [userWorkouts, setUserWorkouts] = useState([]);
+
+  //fetch the userId from AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId");
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserWorkouts = async () => {
+      if (!userId) return;
+
+      try {
+        const workoutCollection = collection(db, "Workouts");
+        const q = query(workoutCollection, where("userId", "==", userId));
+        const querySnapShot = await getDocs(q);
+
+        if (!querySnapShot.empty) {
+          const data = querySnapShot.docs.map((doc) => doc.data());
+          setUserWorkouts(data);
+        } else {
+          console.log("No such user found");
+        }
+      } catch (error) {
+        console.log("Error loading user workouts: ", error);
+      }
+    };
+    const fetchUserProfile = async () => {
+      if (!userId) return;
+
+      try {
+        const profileCollection = collection(db, "Profiles");
+        const q = query(profileCollection, where("userId", "==", userId));
+        const querySnapShot = await getDocs(q);
+
+        if (!querySnapShot.empty) {
+          const data = querySnapShot.docs[0].data();
+          setUser(data);
+        } else {
+          console.log("No such user found");
+        }
+      } catch (error) {
+        console.error("Error fetching profile: ", error);
+      }
+    };
+    fetchUserProfile();
+    fetchUserWorkouts();
+  }, [userId]);
 
   const handlePress = (screen) => {
     navigation.navigate(screen);
@@ -22,23 +89,36 @@ function Track(props) {
         <Text style={styles.label}>My PRs</Text>
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text>{user ? user.squat : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Squat</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text>{user ? user.bench : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Bench</Text>
           </View>
           <View style={styles.prColumn}>
-            <View style={styles.pr}></View>
+            <View style={styles.pr}>
+              <Text>{user ? user.deadlift : ""}</Text>
+            </View>
             <Text style={styles.prLabel}>Deadlift</Text>
           </View>
         </View>
       </View>
       <View style={styles.workoutsContainer}>
         <Text style={styles.myWorkoutsText}>My Workouts</Text>
+        <ScrollView style={styles.workoutsList}>
+          {userWorkouts.map((workout, index) => (
+            <View key={userWorkouts.id} style={styles.workout}>
+              <Text style={styles.workoutText}>{workout.timeStamp}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
-      <View style={styles.chartsContainer}></View>
+      {/* <View style={styles.chartsContainer}></View> */}
       <View style={styles.inner}></View>
       <View style={styles.navBar}>
         <TouchableOpacity
@@ -134,7 +214,7 @@ const styles = StyleSheet.create({
   },
   workoutsContainer: {
     width: "90%",
-    height: "35%",
+    height: "70%",
     alignItems: "center",
     borderWidth: 2,
     borderRadius: 10,
@@ -149,6 +229,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     marginLeft: 10,
+    padding: 10,
+  },
+  workoutText: {
+    color: "white",
+    fontSize: 18,
     padding: 10,
   },
   chartsContainer: {
