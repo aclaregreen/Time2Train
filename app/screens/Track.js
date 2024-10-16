@@ -111,11 +111,22 @@ function Track(props) {
       <View style={styles.workoutsContainer}>
         <Text style={styles.myWorkoutsText}>My Workouts</Text>
         <ScrollView style={styles.workoutsList}>
-          {userWorkouts.map((workout, index) => (
-            <View key={index} style={styles.workout}>
-              <Text style={styles.workoutText}>{workout.timeStamp}</Text>
-            </View>
-          ))}
+          {userWorkouts.map((workout, index) => {
+            const date = new Date(workout.timeStamp).toLocaleDateString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }
+            );
+
+            return (
+              <TouchableOpacity key={index} style={styles.workout}>
+                <Text style={styles.workoutText}>{date}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
       {/* <View style={styles.chartsContainer}></View> */}
@@ -223,6 +234,9 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
     marginHorizontal: 20,
   },
+  workoutsList: {
+    width: "100%",
+  },
   myWorkoutsText: {
     fontSize: 18,
     color: "#FFFFFF",
@@ -231,10 +245,18 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 10,
   },
+  workout: {
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    borderWidth: 2,
+    marginBottom: 5,
+  },
   workoutText: {
-    color: "white",
+    color: "black",
     fontSize: 18,
-    padding: 10,
+    padding: 15,
   },
   chartsContainer: {
     width: "90%",
