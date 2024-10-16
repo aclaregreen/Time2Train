@@ -112,7 +112,7 @@ function Track(props) {
         <Text style={styles.myWorkoutsText}>My Workouts</Text>
         <ScrollView style={styles.workoutsList}>
           {userWorkouts.map((workout, index) => (
-            <View key={workout.id} style={styles.workout}>
+            <View key={index} style={styles.workout}>
               <Text style={styles.workoutText}>{workout.timeStamp}</Text>
             </View>
           ))}
