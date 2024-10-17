@@ -28,6 +28,7 @@ function Track(props) {
   const [userWorkouts, setUserWorkouts] = useState([]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   //fetch the userId from AsyncStorage
   useEffect(() => {
@@ -129,10 +130,14 @@ function Track(props) {
                 <TouchableOpacity
                   key={index}
                   style={styles.workout}
-                  onPress={() => setModalVisible(true)}
+                  onPress={() => {
+                    setModalVisible(true);
+                    setSelectedWorkout(workout);
+                  }}
                 >
                   <Text style={styles.workoutText}>{date}</Text>
                 </TouchableOpacity>
+                {/* Pop up to display workouts*/}
                 <Modal
                   animationType="slide"
                   transparent={true}
@@ -141,7 +146,9 @@ function Track(props) {
                 >
                   <View style={styles.modalBackground}>
                     <View style={styles.modalView}>
-                      <Text style={styles.modalText}>This is a pop-up!</Text>
+                      <Text style={styles.modalText}>
+                        {selectedWorkout ? selectedWorkout.timeStamp : ""}
+                      </Text>
 
                       {/* Close button */}
                       <TouchableOpacity
@@ -297,10 +304,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, .75)", // Dark transparent background
   },
   modalView: {
-    width: 300,
+    width: "80%",
+    height: "80%",
     padding: 20,
     backgroundColor: "white",
     borderRadius: 10,
