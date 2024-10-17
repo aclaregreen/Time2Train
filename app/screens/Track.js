@@ -18,6 +18,7 @@ import {
   View,
   Text,
   ScrollView,
+  Modal,
 } from "react-native";
 
 function Track(props) {
@@ -25,6 +26,8 @@ function Track(props) {
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
   const [userWorkouts, setUserWorkouts] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   //fetch the userId from AsyncStorage
   useEffect(() => {
@@ -122,9 +125,35 @@ function Track(props) {
             );
 
             return (
-              <TouchableOpacity key={index} style={styles.workout}>
-                <Text style={styles.workoutText}>{date}</Text>
-              </TouchableOpacity>
+              <View>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.workout}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Text style={styles.workoutText}>{date}</Text>
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => setModalVisible(false)}
+                >
+                  <View style={styles.modalBackground}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>This is a pop-up!</Text>
+
+                      {/* Close button */}
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <Text style={styles.textStyle}>Close</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
             );
           })}
         </ScrollView>
@@ -230,7 +259,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     marginBottom: 15,
-    backgroundColor: "#444444",
+    backgroundColor: "#2222",
     borderColor: "#D3D3D3",
     marginHorizontal: 20,
   },
@@ -248,16 +277,45 @@ const styles = StyleSheet.create({
   workout: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "#6666",
     borderRadius: 10,
     borderWidth: 2,
     marginBottom: 5,
   },
   workoutText: {
-    color: "black",
+    color: "white",
     fontSize: 18,
     padding: 15,
   },
+
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark semi-transparent background
+  },
+  modalView: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  closeButton: {
+    backgroundColor: "#2196F3",
+    padding: 10,
+    borderRadius: 5,
+  },
+
   chartsContainer: {
     width: "90%",
     height: "35%",
