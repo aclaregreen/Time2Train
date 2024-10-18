@@ -19,6 +19,7 @@ import {
   Text,
   ScrollView,
   Modal,
+  TextInput,
 } from "react-native";
 
 function Track(props) {
@@ -53,7 +54,12 @@ function Track(props) {
 
         if (!querySnapShot.empty) {
           const data = querySnapShot.docs.map((doc) => doc.data());
-          setUserWorkouts(data);
+          const sortedData = data.sort((a, b) => {
+            const dateA = new Date(a.timeStamp);
+            const dateB = new Date(b.timeStamp);
+            return dateB - dateA;
+          });
+          setUserWorkouts(sortedData);
         } else {
           console.log("No such user found");
         }
@@ -87,6 +93,14 @@ function Track(props) {
     navigation.navigate(screen);
   };
 
+  const getDate = (workout) => {
+    return new Date(workout.timeStamp).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.prContainer}>
@@ -116,17 +130,10 @@ function Track(props) {
         <Text style={styles.myWorkoutsText}>My Workouts</Text>
         <ScrollView style={styles.workoutsList}>
           {userWorkouts.map((workout, index) => {
-            const date = new Date(workout.timeStamp).toLocaleDateString(
-              "en-US",
-              {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              }
-            );
+            const date = getDate(workout);
 
             return (
-              <View>
+              <View key={index}>
                 <TouchableOpacity
                   key={index}
                   style={styles.workout}
@@ -147,16 +154,54 @@ function Track(props) {
                   <View style={styles.modalBackground}>
                     <View style={styles.modalView}>
                       <Text style={styles.modalText}>
-                        {selectedWorkout ? selectedWorkout.timeStamp : ""}
+                        {selectedWorkout ? getDate(selectedWorkout) : ""}
                       </Text>
 
-                      {/* Close button */}
-                      <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() => setModalVisible(false)}
-                      >
-                        <Text style={styles.textStyle}>Close</Text>
-                      </TouchableOpacity>
+                      <ScrollView style={styles.exerciseScrollView}>
+                        {selectedWorkout
+                          ? selectedWorkout.exercises.map(
+                              (exercise, exerciseIndex) => (
+                                <View key={exercise.id} style={styles.exercise}>
+                                  <Text style={styles.exerciseText}>
+                                    {exercise.name}
+                                  </Text>
+                                  <View style={styles.statsHeader}>
+                                    <Text style={[styles.headerText]}>Set</Text>
+                                    <Text style={[styles.headerText]}>
+                                      Weight
+                                    </Text>
+                                    <Text style={[styles.headerText]}>
+                                      Reps
+                                    </Text>
+                                  </View>
+                                  {exercise.sets.map((set, setIndex) => (
+                                    <View key={setIndex} style={styles.stats}>
+                                      <View style={styles.values}>
+                                        <Text style={styles.valueText}>
+                                          {setIndex + 1}
+                                        </Text>
+                                        <Text style={styles.valueText}>
+                                          {exercise.sets[setIndex]["weight"]}
+                                        </Text>
+                                        <Text style={styles.valueText}>
+                                          {exercise.sets[setIndex]["reps"]}
+                                        </Text>
+                                      </View>
+                                    </View>
+                                  ))}
+                                </View>
+                              )
+                            )
+                          : ""}
+
+                        {/* Close button */}
+                        <TouchableOpacity
+                          style={styles.closeButton}
+                          onPress={() => setModalVisible(false)}
+                        >
+                          <Text style={styles.textStyle}>Close</Text>
+                        </TouchableOpacity>
+                      </ScrollView>
                     </View>
                   </View>
                 </Modal>
@@ -296,7 +341,7 @@ const styles = StyleSheet.create({
   },
 
   textStyle: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -310,16 +355,70 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "80%",
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "black",
     borderRadius: 10,
     alignItems: "center",
+    borderRadius: 10,
+    borderColor: "#39FF14",
+    borderWidth: 2,
   },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    color: "white",
   },
+
+  exerciseScrollView: {
+    flex: 1,
+    width: "100%",
+  },
+  exercise: {
+    backgroundColor: "#444",
+    alignItems: "center",
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: "#D3D3D3",
+    borderRadius: 10,
+  },
+  exerciseText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+    paddingTop: 10,
+  },
+  stats: {
+    width: "100%",
+    alignItems: "center",
+  },
+  statsHeader: {
+    paddingVertical: 10,
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  values: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 5,
+  },
+  headerText: {
+    flex: 1,
+    textAlign: "center",
+    color: "white",
+    fontSize: 18,
+  },
+  valueText: {
+    flex: 1,
+    textAlign: "center",
+    color: "white",
+    fontSize: 18,
+  },
+
   closeButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#39FF14",
     padding: 10,
     borderRadius: 5,
   },
