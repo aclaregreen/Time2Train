@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { signOut } from "@firebase/auth";
-import {
-  getFirestore,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { auth } from "../../Firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,13 +13,13 @@ import {
   View,
   Text,
 } from "react-native";
+import { useCallback } from "react";
 
 function Profile(props) {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  //fetch the userId from AsyncStorage
   useEffect(() => {
     const fetchUserId = async () => {
       const storedUserId = await AsyncStorage.getItem("userId");
@@ -38,29 +31,29 @@ function Profile(props) {
     fetchUserId();
   }, []);
 
-  //runs whenever userId changes
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!userId) return;
+  const fetchUserProfile = async () => {
+    if (!userId) return;
 
-      try {
-        const profileCollection = collection(db, "Profiles");
-        const q = query(profileCollection, where("userId", "==", userId));
-        const querySnapShot = await getDocs(q);
+    try {
+      const profileDocRef = doc(db, "Profiles", userId);
+      const profile = await getDoc(profileDocRef);
 
-        if (!querySnapShot.empty) {
-          const data = querySnapShot.docs[0].data();
-          setUser(data);
-        } else {
-          console.log("No such user found");
-        }
-      } catch (error) {
-        console.error("Error fetching profile: ", error);
+      if (profile.exists()) {
+        const data = profile.data();
+        setUser(data);
+      } else {
+        console.log("No such user found");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching profile: ", error);
+    }
+  };
 
-    fetchUserProfile();
-  }, [userId]); //run when userId changes
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserProfile();
+    }, [userId])
+  );
 
   const logOut = async () => {
     try {
@@ -75,6 +68,7 @@ function Profile(props) {
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
+
   const editProfile = (screen) => {
     navigation.navigate(screen, { user: user });
   };

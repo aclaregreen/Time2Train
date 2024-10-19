@@ -8,6 +8,7 @@ import {
   query,
   where,
   getDocs,
+  doc,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import {
@@ -61,7 +62,7 @@ function Track(props) {
           });
           setUserWorkouts(sortedData);
         } else {
-          console.log("No such user found");
+          console.log("No user workouts found");
         }
       } catch (error) {
         console.log("Error loading user workouts: ", error);
@@ -71,12 +72,11 @@ function Track(props) {
       if (!userId) return;
 
       try {
-        const profileCollection = collection(db, "Profiles");
-        const q = query(profileCollection, where("userId", "==", userId));
-        const querySnapShot = await getDocs(q);
+        const profileDocRef = doc(db, "Profiles", userId);
+        const profileDoc = await getDoc(profileDocRef);
 
-        if (!querySnapShot.empty) {
-          const data = querySnapShot.docs[0].data();
+        if (profileDoc.exists()) {
+          const data = profileDoc.data();
           setUser(data);
         } else {
           console.log("No such user found");

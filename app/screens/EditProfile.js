@@ -19,6 +19,12 @@ function EditProfile({ route }) {
 
   const [fname, setFName] = useState(user ? user.fname : "");
   const [lname, setLName] = useState(user ? user.lname : "");
+  const [age, setAge] = useState(user ? user.age : "");
+  const [weight, setWeight] = useState(user ? user.weight : "");
+  const [height, setHeight] = useState(user ? user.height : "");
+  const [bench, setBench] = useState(user ? user.bench : "");
+  const [squat, setSquat] = useState(user ? user.squat : "");
+  const [deadlift, setDeadlift] = useState(user ? user.deadlift : "");
 
   const saveChanges = async () => {
     if (!user || !user.userId) return;
@@ -27,8 +33,14 @@ function EditProfile({ route }) {
       await updateDoc(userDocRef, {
         fname: fname,
         lname: lname,
+        age: age,
+        weight: weight,
+        height: height,
+        bench: bench,
+        squat: squat,
+        deadlift: deadlift,
       });
-      alert("Profile updated successfully!");
+      //alert("Profile updated successfully!");
       handlePress("Profile");
     } catch (error) {
       console.error("Error updating profile: ", error);
@@ -75,19 +87,37 @@ function EditProfile({ route }) {
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.height : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                returnKeyType="done"
+                keyboardType="numeric"
+                value={height}
+                onChangeText={setHeight}
+              />
             </View>
             <Text style={styles.prLabel}>Height</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.weight : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                returnKeyType="done"
+                keyboardType="numeric"
+                value={weight}
+                onChangeText={setWeight}
+              />
             </View>
             <Text style={styles.prLabel}>Bodyweight</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.age : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                returnKeyType="done"
+                keyboardType="numeric"
+                value={age}
+                onChangeText={setAge}
+              />
             </View>
             <Text style={styles.prLabel}>Age</Text>
           </View>
@@ -96,19 +126,37 @@ function EditProfile({ route }) {
         <View style={styles.prRow}>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.bench : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                keyboardType="numeric"
+                returnKeyType="done"
+                value={bench}
+                onChangeText={setBench}
+              />
             </View>
             <Text style={styles.prLabel}>Bench</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.squat : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                keyboardType="numeric"
+                returnKeyType="done"
+                value={squat}
+                onChangeText={setSquat}
+              />
             </View>
             <Text style={styles.prLabel}>Squat</Text>
           </View>
           <View style={styles.prColumn}>
             <View style={styles.pr}>
-              <Text style={styles.statText}>{user ? user.deadlift : ""}</Text>
+              <TextInput
+                style={styles.statText}
+                keyboardType="numeric"
+                returnKeyType="done"
+                value={deadlift}
+                onChangeText={setDeadlift}
+              />
             </View>
             <Text style={styles.prLabel}>Deadlift</Text>
           </View>
@@ -221,10 +269,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   pr: {
-    width: 50,
-    height: 50,
-    backgroundColor: "#D3D3D3",
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    backgroundColor: "#FFF",
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 5,
