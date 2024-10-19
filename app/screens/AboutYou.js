@@ -50,6 +50,7 @@ function AboutYou({ route }) {
         squat: squat,
         deadlift: deadlift,
         userId: userId,
+        pfp: null,
       };
 
       const profileDocRef = doc(db, "Profiles", userId);

@@ -14,11 +14,27 @@ import {
   Text,
 } from "react-native";
 import { useCallback } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
+// Function to get the download URL
+const fetchImageUrl = async (imagePath) => {
+  const storage = getStorage();
+  const imageRef = ref(storage, imagePath);
+
+  try {
+    const url = await getDownloadURL(imageRef);
+    return url;
+  } catch (error) {
+    console.error("Error fetching image URL:", error);
+    return null;
+  }
+};
 
 function Profile(props) {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [profilePictureUrl, setProfilePictureUrl] = useState(null);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -41,6 +57,12 @@ function Profile(props) {
       if (profile.exists()) {
         const data = profile.data();
         setUser(data);
+
+        // Fetch the profile picture URL
+        if (data.pfp) {
+          const url = await fetchImageUrl(data.pfp);
+          setProfilePictureUrl(url);
+        }
       } else {
         console.log("No such user found");
       }
@@ -86,7 +108,13 @@ function Profile(props) {
         </TouchableOpacity>
       </View>
       <View style={styles.profileContainer}>
-        <View style={styles.pfp}></View>
+        {profilePictureUrl ? (
+          <Image source={{ uri: profilePictureUrl }} style={styles.pfpImage} />
+        ) : (
+          <View style={styles.pfp}>
+            <Text style={styles.pfpPlaceholder}>No Image</Text>
+          </View>
+        )}
       </View>
       <Text style={styles.name}>
         {user ? user.fname : ""} {user ? user.lname : ""}
@@ -237,6 +265,16 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: "#444444",
     borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pfpImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  pfpPlaceholder: {
+    color: "white",
   },
   name: {
     color: "white",

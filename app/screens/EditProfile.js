@@ -6,9 +6,15 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Image,
+  Alert,
 } from "react-native";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase";
+import { launchImageLibrary } from "react-native-image-picker";
+import * as ImagePicker from "expo-image-picker";
+// import ImagePicker from "react-native-image-crop-picker";
+//import storage from "@react-native-firebase/storage";
 import { auth } from "../../Firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -16,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 function EditProfile({ route }) {
   const navigation = useNavigation();
   const { user } = route.params;
+  const [profilePic, setProfilePic] = useState(null);
 
   const [fname, setFName] = useState(user ? user.fname : "");
   const [lname, setLName] = useState(user ? user.lname : "");
@@ -25,6 +32,80 @@ function EditProfile({ route }) {
   const [bench, setBench] = useState(user ? user.bench : "");
   const [squat, setSquat] = useState(user ? user.squat : "");
   const [deadlift, setDeadlift] = useState(user ? user.deadlift : "");
+  const [profilePath, setProfilePath] = useState(null);
+
+  const pickImage = async () => {
+    // Request permission to access the user's photos
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission to access media is required!");
+      return;
+    }
+
+    // Let user select an image
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!pickerResult.canceled) {
+      const selectedImageUri = pickerResult.assets[0].uri;
+      setProfilePic(selectedImageUri);
+
+      // Call uploadImage after setting the profile picture
+      await uploadImage(selectedImageUri);
+    }
+  };
+
+  // Update the uploadImage function to accept the image URI as an argument
+  const uploadImage = async (imageUri) => {
+    if (!imageUri) return;
+
+    const user = auth.currentUser;
+    if (!user) {
+      Alert.alert("Please log in to upload a profile picture.");
+      return;
+    }
+
+    const token = await user.getIdToken();
+
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+
+    const filename = `profile_images/${user.uid}_${new Date().getTime()}.jpg`;
+
+    const firebaseStorageUrl = `https://firebasestorage.googleapis.com/v0/b/time-2-train.appspot.com/o?name=${filename}`;
+
+    try {
+      let uploadResponse = await fetch(firebaseStorageUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "image/jpeg",
+          Authorization: `Bearer ${token}`,
+        },
+        body: blob,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Upload failed: " + uploadResponse.statusText);
+      }
+
+      let uploadResult = await uploadResponse.json();
+
+      const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/time-2-train.appspot.com/o/${encodeURIComponent(
+        filename
+      )}?alt=media`;
+      const userDocRef = doc(db, "Profiles", user.uid);
+      setProfilePath(downloadUrl);
+      await updateDoc(userDocRef, { profilePic: downloadUrl });
+    } catch (error) {
+      console.log("Error uploading image:", error);
+    }
+  };
 
   const saveChanges = async () => {
     if (!user || !user.userId) return;
@@ -39,6 +120,7 @@ function EditProfile({ route }) {
         bench: bench,
         squat: squat,
         deadlift: deadlift,
+        pfp: profilePath,
       });
       //alert("Profile updated successfully!");
       handlePress("Profile");
@@ -66,21 +148,36 @@ function EditProfile({ route }) {
           <Text style={styles.logoutButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.profileContainer}>
+      {/* <View style={styles.profileContainer}>
         <View style={styles.pfp}></View>
+      </View> */}
+      <View style={styles.profileContainer}>
+        <View style={styles.pfp}>
+          {profilePic ? (
+            <Image source={{ uri: profilePic }} style={styles.pfpImage} />
+          ) : (
+            <Text style={styles.pfpPlaceholder}>No Image</Text>
+          )}
+        </View>
+        <TouchableOpacity style={styles.button} onPress={pickImage}>
+          <Text style={styles.buttonText}>Change Profile Picture</Text>
+        </TouchableOpacity>
       </View>
-      <TextInput
-        style={styles.name}
-        returnKeyType="done"
-        value={fname}
-        onChangeText={setFName}
-      />
-      <TextInput
-        style={styles.name}
-        value={lname}
-        returnKeyType="done"
-        onChangeText={setLName}
-      />
+      <View style={styles.nameContainer}>
+        <TextInput
+          style={styles.name}
+          returnKeyType="done"
+          value={fname}
+          onChangeText={setFName}
+        />
+        <TextInput
+          style={styles.name}
+          value={lname}
+          returnKeyType="done"
+          onChangeText={setLName}
+        />
+      </View>
+
       <View style={styles.profileOptions}></View>
       <View style={styles.prContainer}>
         <Text style={styles.label}>Stats</Text>
@@ -222,6 +319,30 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: "#444444",
     borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pfpImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  pfpPlaceholder: {
+    color: "white",
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: "#39FF14",
+    padding: 10,
+    borderRadius: 20,
+    width: "50%",
+  },
+  buttonText: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  nameContainer: {
+    marginVertical: 20,
   },
   name: {
     color: "black",
@@ -235,14 +356,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     justifyContent: "center",
     marginBottom: 5,
-  },
-  profileOptions: {
-    width: "90%",
-    height: "5%",
-    marginBottom: 15,
-    marginHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
   },
   prContainer: {
     width: "90%",
@@ -294,3 +407,4 @@ const styles = StyleSheet.create({
   },
 });
 export default EditProfile;
+``;
