@@ -61,10 +61,13 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: "100%",
-    height: 70,
+    height: 60,
     backgroundColor: "#39FF14",
     justifyContent: "center",
     alignItems: "center",
+    width: "80%",
+    borderRadius: 20,
+    marginBottom: 10,
   },
   logo: {
     width: 350,
@@ -74,10 +77,13 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     width: "100%",
-    height: 70,
+    height: 60,
     backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
+    width: "80%",
+    borderRadius: 20,
+    marginBottom: 20,
   },
   buttonText: {
     color: "white",
