@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,11 +7,35 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { db } from "../../Firebase";
+import { auth } from "../../Firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 function EditProfile({ route }) {
   const navigation = useNavigation();
   const { user } = route.params;
+
+  const [fname, setFName] = useState(user ? user.fname : "");
+  const [lname, setLName] = useState(user ? user.lname : "");
+
+  const saveChanges = async () => {
+    if (!user || !user.userId) return;
+    try {
+      const userDocRef = doc(db, "Profiles", user.userId);
+      await updateDoc(userDocRef, {
+        fname: fname,
+        lname: lname,
+      });
+      alert("Profile updated successfully!");
+      handlePress("Profile");
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+      alert("Failed to update profile.");
+    }
+  };
+
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
@@ -33,9 +57,18 @@ function EditProfile({ route }) {
       <View style={styles.profileContainer}>
         <View style={styles.pfp}></View>
       </View>
-      <Text style={styles.name}>
-        {user ? user.fname : ""} {user ? user.lname : ""}
-      </Text>
+      <TextInput
+        style={styles.name}
+        returnKeyType="done"
+        value={fname}
+        onChangeText={setFName}
+      />
+      <TextInput
+        style={styles.name}
+        value={lname}
+        returnKeyType="done"
+        onChangeText={setLName}
+      />
       <View style={styles.profileOptions}></View>
       <View style={styles.prContainer}>
         <Text style={styles.label}>Stats</Text>
@@ -80,6 +113,11 @@ function EditProfile({ route }) {
             <Text style={styles.prLabel}>Deadlift</Text>
           </View>
         </View>
+      </View>
+      <View style={styles.saveContainer}>
+        <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
+          <Text>Save</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -138,7 +176,12 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   name: {
-    color: "white",
+    color: "black",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: "#888",
+    borderRadius: 20,
+    paddingHorizontal: 10,
     fontSize: 16,
     fontWeight: "bold",
     marginHorizontal: 30,
@@ -189,6 +232,17 @@ const styles = StyleSheet.create({
   prLabel: {
     fontSize: 18,
     color: "white",
+  },
+  saveContainer: {
+    alignItems: "center",
+    paddingTop: 10,
+  },
+  saveButton: {
+    backgroundColor: "#39FF14",
+    alignItems: "center",
+    width: "40%",
+    padding: 10,
+    borderRadius: 10,
   },
 });
 export default EditProfile;

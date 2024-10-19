@@ -3,13 +3,7 @@ import { auth } from "../../Firebase";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../../Firebase";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, setDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -57,18 +51,9 @@ function AboutYou({ route }) {
         deadlift: deadlift,
         userId: userId,
       };
-      console.log(userId);
 
-      if (profileId) {
-        const profileDocRef = doc(db, "Profiles", userId);
-        await updateDoc(profileDocRef, profileData);
-      } else {
-        const profileRef = await addDoc(
-          collection(db, "Profiles"),
-          profileData
-        );
-        setProfileId(profileRef.id);
-      }
+      const profileDocRef = doc(db, "Profiles", userId);
+      await setDoc(profileDocRef, profileData);
     } catch (error) {
       console.error("Error creating profile: ", error);
     }
