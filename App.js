@@ -17,6 +17,7 @@ import Calculator from "./app/screens/Calculator";
 import Home from "./app/screens/Home";
 import Track from "./app/screens/Track";
 import Profile from "./app/screens/Profile";
+import EditProfile from "./app/screens/EditProfile";
 
 const Stack = createStackNavigator();
 
@@ -83,6 +84,11 @@ export default function App() {
           name="Profile"
           component={Profile}
           options={{ headerShown: false, animationEnabled: false }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

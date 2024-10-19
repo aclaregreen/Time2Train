@@ -1,84 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { signOut } from "@firebase/auth";
+import React from "react";
 import {
-  getFirestore,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { db } from "../../Firebase";
-import { auth } from "../../Firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  StyleSheet,
-  Image,
-  SafeAreaView,
-  TouchableOpacity,
   View,
+  StyleSheet,
+  SafeAreaView,
   Text,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-function Profile(props) {
+function EditProfile({ route }) {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-
-  //fetch the userId from AsyncStorage
-  useEffect(() => {
-    const fetchUserId = async () => {
-      const storedUserId = await AsyncStorage.getItem("userId");
-      if (storedUserId) {
-        setUserId(storedUserId);
-      }
-    };
-
-    fetchUserId();
-  }, []);
-
-  //runs whenever userId changes
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!userId) return;
-
-      try {
-        const profileCollection = collection(db, "Profiles");
-        const q = query(profileCollection, where("userId", "==", userId));
-        const querySnapShot = await getDocs(q);
-
-        if (!querySnapShot.empty) {
-          const data = querySnapShot.docs[0].data();
-          setUser(data);
-        } else {
-          console.log("No such user found");
-        }
-      } catch (error) {
-        console.error("Error fetching profile: ", error);
-      }
-    };
-
-    fetchUserProfile();
-  }, [userId]); //run when userId changes
-
-  const logOut = async () => {
-    try {
-      await signOut(auth);
-      await AsyncStorage.removeItem("userToken");
-      navigation.navigate("Welcome");
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
-
+  const { user } = route.params;
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
-  const editProfile = (screen) => {
-    navigation.navigate(screen, { user: user });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -87,8 +23,11 @@ function Profile(props) {
             {user ? user.username : "Loading..."}
           </Text>
         </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={logOut}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => handlePress("Profile")}
+        >
+          <Text style={styles.logoutButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.profileContainer}>
@@ -97,14 +36,7 @@ function Profile(props) {
       <Text style={styles.name}>
         {user ? user.fname : ""} {user ? user.lname : ""}
       </Text>
-      <View style={styles.profileOptions}>
-        <TouchableOpacity
-          style={styles.editProfile}
-          onPress={() => editProfile("EditProfile")}
-        >
-          <Text style={styles.label}>Edit Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <View style={styles.profileOptions}></View>
       <View style={styles.prContainer}>
         <Text style={styles.label}>Stats</Text>
         <View style={styles.prRow}>
@@ -149,45 +81,6 @@ function Profile(props) {
           </View>
         </View>
       </View>
-      <View style={styles.inner}></View>
-      <View style={styles.navBar}>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => handlePress("Home")}
-        >
-          <Image source={require("../assets/home.png")} style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => handlePress("Track")}
-        >
-          <Image
-            source={require("../assets/clipboard.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => handlePress("NewWorkout")}
-        >
-          <Image source={require("../assets/plus.png")} style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => handlePress("Calculator")}
-        >
-          <Image
-            source={require("../assets/calculator.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Image
-            source={require("../assets/profile.png")}
-            style={styles.profile}
-          />
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -217,7 +110,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-  logoutButton: {
+  backButton: {
     backgroundColor: "#333",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -260,13 +153,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  editProfile: {
-    backgroundColor: "#444444",
-    borderWidth: 2,
-    borderRadius: 10,
-    padding: 5,
-    paddingHorizontal: 125,
-  },
   prContainer: {
     width: "90%",
     height: "35%",
@@ -304,35 +190,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
   },
-  inner: {
-    flex: 1,
-    marginBottom: 60,
-  },
-  navBar: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    backgroundColor: "#000",
-    padding: 10,
-    width: "100%",
-  },
-  navButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: "#444",
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  icon: {
-    height: "180%",
-    width: "180%",
-    resizeMode: "contain",
-  },
-  profile: {
-    height: "150%",
-    width: "150%",
-    resizeMode: "contain",
-  },
 });
-
-export default Profile;
+export default EditProfile;
