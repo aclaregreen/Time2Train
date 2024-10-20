@@ -11,10 +11,8 @@ import {
 } from "react-native";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase";
-import { launchImageLibrary } from "react-native-image-picker";
 import * as ImagePicker from "expo-image-picker";
-// import ImagePicker from "react-native-image-crop-picker";
-//import storage from "@react-native-firebase/storage";
+import * as ImageManipulator from "expo-image-manipulator"; // Import ImageManipulator
 import { auth } from "../../Firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -32,10 +30,9 @@ function EditProfile({ route }) {
   const [bench, setBench] = useState(user ? user.bench : "");
   const [squat, setSquat] = useState(user ? user.squat : "");
   const [deadlift, setDeadlift] = useState(user ? user.deadlift : "");
-  const [profilePath, setProfilePath] = useState(null);
+  const [profilePath, setProfilePath] = useState(user ? user.pfp : null);
 
   const pickImage = async () => {
-    // Request permission to access the user's photos
     let permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -44,7 +41,6 @@ function EditProfile({ route }) {
       return;
     }
 
-    // Let user select an image
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -54,14 +50,21 @@ function EditProfile({ route }) {
 
     if (!pickerResult.canceled) {
       const selectedImageUri = pickerResult.assets[0].uri;
-      setProfilePic(selectedImageUri);
 
-      // Call uploadImage after setting the profile picture
-      await uploadImage(selectedImageUri);
+      // Resize the image
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        selectedImageUri,
+        [{ resize: { width: 300, height: 300 } }], // Set your desired dimensions
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Adjust compression/format
+      );
+
+      setProfilePic(resizedImage.uri);
+
+      // Call uploadImage after resizing the image
+      await uploadImage(resizedImage.uri);
     }
   };
 
-  // Update the uploadImage function to accept the image URI as an argument
   const uploadImage = async (imageUri) => {
     if (!imageUri) return;
 
@@ -72,11 +75,11 @@ function EditProfile({ route }) {
     }
 
     const token = await user.getIdToken();
-
     const response = await fetch(imageUri);
     const blob = await response.blob();
 
     const filename = `profile_images/${user.uid}_${new Date().getTime()}.jpg`;
+    setProfilePath(filename);
 
     const firebaseStorageUrl = `https://firebasestorage.googleapis.com/v0/b/time-2-train.appspot.com/o?name=${filename}`;
 
@@ -94,14 +97,10 @@ function EditProfile({ route }) {
         throw new Error("Upload failed: " + uploadResponse.statusText);
       }
 
-      let uploadResult = await uploadResponse.json();
-
       const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/time-2-train.appspot.com/o/${encodeURIComponent(
         filename
       )}?alt=media`;
       const userDocRef = doc(db, "Profiles", user.uid);
-      setProfilePath(downloadUrl);
-      await updateDoc(userDocRef, { profilePic: downloadUrl });
     } catch (error) {
       console.log("Error uploading image:", error);
     }
@@ -122,7 +121,6 @@ function EditProfile({ route }) {
         deadlift: deadlift,
         pfp: profilePath,
       });
-      //alert("Profile updated successfully!");
       handlePress("Profile");
     } catch (error) {
       console.error("Error updating profile: ", error);
@@ -133,6 +131,7 @@ function EditProfile({ route }) {
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -148,9 +147,6 @@ function EditProfile({ route }) {
           <Text style={styles.logoutButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
-      {/* <View style={styles.profileContainer}>
-        <View style={styles.pfp}></View>
-      </View> */}
       <View style={styles.profileContainer}>
         <View style={styles.pfp}>
           {profilePic ? (
@@ -177,8 +173,6 @@ function EditProfile({ route }) {
           onChangeText={setLName}
         />
       </View>
-
-      <View style={styles.profileOptions}></View>
       <View style={styles.prContainer}>
         <Text style={styles.label}>Stats</Text>
         <View style={styles.prRow}>
@@ -407,4 +401,3 @@ const styles = StyleSheet.create({
   },
 });
 export default EditProfile;
-``;
