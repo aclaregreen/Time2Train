@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   View,
+  Text,
 } from "react-native";
 
 function Home(props) {
@@ -17,7 +18,9 @@ function Home(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inner}></View>
+      <View style={styles.inner}>
+        <Text>Home Screen</Text>
+      </View>
       <View style={styles.navBar}>
         <TouchableOpacity style={styles.navButton}>
           <Image source={require("../assets/home.png")} style={styles.icon} />
