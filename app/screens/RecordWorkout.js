@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -18,6 +19,8 @@ function RecordWorkout({ route }) {
   const navigation = useNavigation();
   const { addedExercises } = route.params;
   const [workoutId, setWorkoutId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState(null);
 
   const [exercises, setExercises] = useState(
     addedExercises.map((exercise) => ({
@@ -86,7 +89,55 @@ function RecordWorkout({ route }) {
       <ScrollView style={styles.exerciseContainer}>
         {exercises.map((exercise, exerciseIndex) => (
           <View key={exercise.id} style={styles.exercise}>
-            <Text style={styles.exerciseText}>{exercise.name}</Text>
+            <View style={styles.nameHeader}>
+              <View style={styles.placeholder}></View>
+              <Text style={styles.exerciseText}>{exercise.name}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                  setSelectedExercise(exercise);
+                }}
+              >
+                <Text style={styles.info}>ⓘ</Text>
+              </TouchableOpacity>
+              <Modal
+                style={styles.exerciseInfo}
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <View style={styles.modalBackground}>
+                  <View style={styles.modalView}>
+                    <ScrollView style={styles.exerciseScrollView}>
+                      <Text style={styles.exerciseText}>
+                        {selectedExercise ? selectedExercise.name : ""}
+                      </Text>
+                      <Text style={styles.infoText}>
+                        Equipment:{" "}
+                        {selectedExercise ? selectedExercise.equipment : ""}
+                      </Text>
+                      <Text style={styles.infoText}>
+                        Muscle Groups:{" "}
+                        {selectedExercise
+                          ? selectedExercise.muscleGroups.join(", ")
+                          : ""}
+                      </Text>
+                      <Text style={styles.infoText}>
+                        Description:{" "}
+                        {selectedExercise ? selectedExercise.description : ""}
+                      </Text>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <Text style={styles.textStyle}>Close</Text>
+                      </TouchableOpacity>
+                    </ScrollView>
+                  </View>
+                </View>
+              </Modal>
+            </View>
             <View style={styles.statsHeader}>
               <Text style={[styles.headerText]}>Set</Text>
               <Text style={[styles.headerText]}>Weight</Text>
@@ -197,11 +248,55 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
     borderRadius: 10,
   },
+  nameHeader: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  info: {
+    padding: 5,
+    color: "white",
+    fontSize: 28,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, .75)", // Dark transparent background
+  },
+  modalView: {
+    width: "80%",
+    height: "40%",
+    padding: 20,
+    backgroundColor: "black",
+    borderRadius: 10,
+    alignItems: "center",
+    borderRadius: 10,
+    borderColor: "#39FF14",
+    borderWidth: 2,
+  },
+  test: {
+    color: "white",
+  },
+  closeButton: {
+    backgroundColor: "#39FF14",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  placeholder: {
+    height: 50,
+    width: 50,
+  },
   exerciseText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 18,
     paddingTop: 10,
+  },
+  infoText: {
+    color: "white",
+    paddingVertical: 10,
   },
   stats: {
     width: "100%",
