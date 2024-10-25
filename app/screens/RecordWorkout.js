@@ -100,6 +100,7 @@ function RecordWorkout({ route }) {
               >
                 <Text style={styles.info}>ⓘ</Text>
               </TouchableOpacity>
+              {/* info pop up */}
               <Modal
                 style={styles.exerciseInfo}
                 animationType="slide"
