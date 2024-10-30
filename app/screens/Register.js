@@ -23,55 +23,6 @@ const Register = () => {
   const [profileId, setProfileId] = useState(null);
   const navigation = useNavigation(); //hook used to navigate to different screens
 
-  // const saveRegister = async (token) => {
-  //   try {
-  //     await AsyncStorage.setItem("userToken", token);
-  //   } catch (error) {
-  //     console.error("Error saving user info: ", error);
-  //   }
-  // };
-
-  // const addProfile = async () => {
-  //   const userId = await AsyncStorage.getItem("userId");
-  //   try {
-  //     const profileData = {
-  //       username: username,
-  //       fname: fname,
-  //       lname: lname,
-  //       userId: userId,
-  //     };
-  //     console.log(userId);
-
-  //     if (profileId) {
-  //       const profileDocRef = doc(db, "Profiles", userId);
-  //       await updateDoc(profileDocRef, profileData);
-  //     } else {
-  //       const profileRef = await addDoc(
-  //         collection(db, "Profiles"),
-  //         profileData
-  //       );
-  //       setProfileId(profileRef.id);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating profile: ", error);
-  //   }
-  // };
-
-  // const handleRegister = () => {
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     .then(async (userCredential) => {
-  //       const user = userCredential.user;
-  //       saveRegister(user.stsTokenManager.accessToken);
-  //       await AsyncStorage.setItem("userId", user.uid);
-  //       addProfile();
-  //       navigation.navigate("AboutYou");
-  //       //Alert.alert("Registration Successful, Welcome ${user.email}");
-  //     })
-  //     .catch((error) => {
-  //       const errorMessage = error.message;
-  //       Alert.alert("Registration failed!", errorMessage);
-  //     });
-  // };
   const handlePress = (screen) => {
     navigation.navigate(screen);
   };
