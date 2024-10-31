@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     //flexDirection: "row",
+    top: 200,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
-    margin: 20,
+    margin: 10,
   },
   buttonText: {
     color: "white",
