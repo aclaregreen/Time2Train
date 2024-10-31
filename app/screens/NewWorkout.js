@@ -24,19 +24,21 @@ function NewWorkout(props) {
           style={styles.workoutButton}
           onPress={() => handlePress("CreateWorkout")}
         >
-          <Image
+          <Text style={styles.buttonText}>Create your own workout {"  "}+</Text>
+          {/* <Image
             source={require("../assets/pencil.png")}
-            style={styles.icon}
-          ></Image>
+            style={styles.symbol}
+          ></Image> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.workoutButton}
           onPress={() => handlePress("TimedWorkout")}
         >
-          <Image
+          {/* <Image
             source={require("../assets/timer.png")}
             style={styles.icon}
-          ></Image>
+          ></Image> */}
+          <Text style={styles.buttonText}>Workout Library</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.navBar}>
@@ -87,19 +89,31 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
+    //flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
   },
   workoutButton: {
-    height: "20%",
-    width: "35%",
+    height: "10%",
+    width: "90%",
     backgroundColor: "#444",
     borderWidth: 2,
     borderRadius: 25,
     borderColor: "#D3D3D3",
     justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
+    margin: 20,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  symbol: {
+    height: 75,
+    width: 75,
+    resizeMode: "contain",
   },
   navBar: {
     flexDirection: "row",
