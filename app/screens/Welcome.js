@@ -39,7 +39,7 @@ const Welcome = () => {
         style={styles.loginButton}
         onPress={() => handlePress("Login")}
       >
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText1}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.registerButton}
@@ -84,6 +84,11 @@ const styles = StyleSheet.create({
     width: "80%",
     borderRadius: 20,
     marginBottom: 20,
+  },
+  buttonText1: {
+    color: "black",
+    fontSize: 24,
+    fontWeight: "bold",
   },
   buttonText: {
     color: "white",
