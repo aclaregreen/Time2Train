@@ -20,7 +20,7 @@ function Home(props) {
     <SafeAreaView style={styles.container}>
       {/* need to add search bar to search for other users, view profile and stats */}
       <View style={styles.inner}>
-        <Text>Home Screen</Text>
+        <Text style={styles.text}>Home Screen</Text>
       </View>
       <View style={styles.navBar}>
         <TouchableOpacity style={styles.navButton}>
